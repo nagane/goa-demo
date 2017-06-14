@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/goadesign/goa"
 	"goa-demo/app"
 )
@@ -18,10 +19,16 @@ func NewBottleController(service *goa.Service) *BottleController {
 // Show runs the show action.
 func (c *BottleController) Show(ctx *app.ShowBottleContext) error {
 	// BottleController_Show: start_implement
-
 	// Put your logic here
+	if ctx.BottleID == 0 {
+		return ctx.NotFound()
+	}
 
-	// BottleController_Show: end_implement
-	res := &app.GoaExampleBottle{}
-	return ctx.OK(res)
+	bottle := app.GoaExampleBottle{
+		ID:   ctx.BottleID,
+		Name: fmt.Sprintf("Bottle #%d", ctx.BottleID),
+		Href: app.BottleHref(ctx.BottleID),
+	}
+
+	return ctx.OK(&bottle)
 }
